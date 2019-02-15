@@ -1,0 +1,46 @@
+version: '3.5'
+services:
+  prometheus:
+    image: prom/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus:/prometheus
+    networks:
+      - traefik
+    labels:
+      traefik.enable: true
+      traefik.port: 9090
+      traefik.frontend.rule: "Host:${PROMETHEUS_DOMAIN}"
+      traefik.frontend.auth.basic.users: "${PROMETHEUS_AUTH}"
+    restart: unless-stopped
+  alertmanager:
+    image: prom/alertmanager
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    networks:
+      - traefik
+    restart: unless-stopped
+  pushgateway:
+    image: prom/pushgateway
+    networks:
+      - traefik
+    labels:
+      traefik.enable: true
+      traefik.port: 9091
+      traefik.frontend.rule: "Host:${PUSHGATEWAY_DOMAIN}"
+      traefik.frontend.auth.basic.users: "${PUSHGATEWAY_AUTH}"
+    restart: unless-stopped
+volumes:
+  prometheus:
+networks:
+  traefik:
+    name: ${TRAEFIK_NETWORK}
+    external: true

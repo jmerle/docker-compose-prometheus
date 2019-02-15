@@ -1,0 +1,11 @@
+global:
+  smtp_from: alertmanager@example.com
+  smtp_smarthost: smtp.example.com:587
+
+route:
+  receiver: mail
+
+receivers:
+  - name: mail
+    email_configs:
+      - to: alerts@example.com
