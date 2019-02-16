@@ -1,4 +1,4 @@
-# Docker Compose Grafana
+# Docker Compose Prometheus
 
 A Docker Compose configuration to run [Prometheus](https://prometheus.io/), [Alertmanager](https://github.com/prometheus/alertmanager) and [Pushgateway](https://github.com/prometheus/pushgateway) behind a [Traefik](https://traefik.io/) reverse proxy.
 
